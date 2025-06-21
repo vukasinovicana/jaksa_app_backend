@@ -33,10 +33,10 @@ class AuthController(
     @PostMapping("/login")
     fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<Any> {
         val user = userRepository.findByUsername(loginRequest.username)
-            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials")
+            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Neispravno korisničko ime ili lozinka. Pokušajte ponovo.")
 
         if (!passwordEncoder.matches(loginRequest.password, user.password)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials")
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Neispravno korisničko ime ili lozinka. Pokušajte ponovo.")
         }
 
         val token = jwtUtil.generateToken(user.username)
@@ -46,8 +46,12 @@ class AuthController(
     @PostMapping("/register")
     fun register(@RequestBody request: RegisterRequest): ResponseEntity<String> {
         // Check if username or email already exists
-        if (userRepository.findByUsername(request.username) != null || userRepository.findByEmail(request.email) != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username is already taken")
+        if (userRepository.findByUsername(request.username) != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Korisničko ime je već zauzeto.")
+        }
+
+        if (userRepository.findByEmail(request.email) != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email adresa je već zauzeta.")
         }
 
         // Hash the password
@@ -65,6 +69,6 @@ class AuthController(
 
         userRepository.save(newUser)
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully")
+        return ResponseEntity.status(HttpStatus.CREATED).body("Korisnik uspešno registrovan.")
     }
 }

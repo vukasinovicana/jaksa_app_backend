@@ -20,6 +20,14 @@ class UserController(private val repository: UserRepository, private val passwor
     @GetMapping("/")
     fun findAll() = repository.findAll()
 
+    @GetMapping("/allUsers")
+    fun findAllUsers(): ResponseEntity<List<UserDto>> {
+        val users = repository.findAll().map { it.toDto() }
+        return ResponseEntity.ok(users)
+    }
+
+
+
     @GetMapping("/{username}")
     fun findOne(@PathVariable username: String) =
             repository.findByUsername(username) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Ovaj korisnik ne postoji.")
@@ -61,7 +69,7 @@ class UserController(private val repository: UserRepository, private val passwor
             ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Korisnik nije pronadjen.")
 
         if (!passwordEncoder.matches(request.currentPassword, user.password)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Trenutna lozinka nije tačna.")
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Stara lozinka nije tačna.")
         }
 
         user.password = passwordEncoder.encode(request.newPassword)
