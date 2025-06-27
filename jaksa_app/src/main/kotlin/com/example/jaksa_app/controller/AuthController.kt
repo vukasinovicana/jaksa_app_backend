@@ -1,5 +1,6 @@
 package com.example.jaksa_app.controller
 
+import com.example.jaksa_app.model.Role
 import com.example.jaksa_app.security.JwtUtil
 import com.example.jaksa_app.model.User
 import com.example.jaksa_app.repository.UserRepository
@@ -27,7 +28,8 @@ class AuthController(
         val email: String,
         val phone: String,
         val username: String,
-        val password: String
+        val password: String,
+        val role: Role = Role.STUDENT
     )
 
     @PostMapping("/login")
@@ -64,7 +66,8 @@ class AuthController(
             email = request.email,
             phone = request.phone,
             username = request.username,
-            password = hashedPassword
+            password = hashedPassword,
+            role = request.role
         )
 
         userRepository.save(newUser)

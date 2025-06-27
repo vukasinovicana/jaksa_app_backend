@@ -2,6 +2,10 @@ package com.example.jaksa_app.model
 
 import jakarta.persistence.*
 
+
+
+enum class Role { TEACHER, STUDENT }
+
 @Entity
 @Table(name = "users")
 class User(
@@ -13,6 +17,9 @@ class User(
         @Column(unique = true)
         var username: String,
         var password: String,
+        @Enumerated(EnumType.STRING)
+        @Column(nullable = false)
+        var role: Role,
         @Id @GeneratedValue var id: Long? = null)
 
 
@@ -21,7 +28,8 @@ data class UserDto(
         val lastname: String,
         val email: String,
         val phone: String,
-        val username: String
+        val username: String,
+        val role: Role,
 )
 
 fun User.toDto(): UserDto = UserDto(
@@ -29,7 +37,8 @@ fun User.toDto(): UserDto = UserDto(
         lastname = this.lastname,
         email = this.email,
         phone = this.phone,
-        username = this.username
+        username = this.username,
+        role = this.role
 )
 
 
