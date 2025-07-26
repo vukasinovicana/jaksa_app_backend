@@ -18,10 +18,10 @@ class AuthService(
 
     fun login(loginRequest: AuthController.LoginRequest): ResponseEntity<Any> {
         val user = userRepository.findByUsername(loginRequest.username)
-            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Неисправно корисничко име или лозинка.")
+            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Neispravno korisničko ime ili lozinka.")
 
         if (!passwordEncoder.matches(loginRequest.password, user.password)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Неисправно корисничко име или лозинка.")
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Neispravno korisničko ime ili lozinka.")
         }
 
         val token = jwtUtil.generateToken(user.username)
@@ -30,11 +30,11 @@ class AuthService(
 
     fun register(request: AuthController.RegisterRequest): ResponseEntity<String> {
         if (userRepository.findByUsername(request.username) != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Корисничко име је већ заузето.")
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Korisničko ime je već zauzeto.")
         }
 
         if (userRepository.findByEmail(request.email) != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email адреса је већ заузета.")
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email adresa je već zauzeta.")
         }
 
         val hashedPassword = passwordEncoder.encode(request.password)
@@ -51,6 +51,6 @@ class AuthService(
 
         userRepository.save(newUser)
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("Корисник успешно регистрован.")
+        return ResponseEntity.status(HttpStatus.CREATED).body("Korisnik uspešno registrovan.")
     }
 }
