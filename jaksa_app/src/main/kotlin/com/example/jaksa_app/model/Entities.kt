@@ -29,7 +29,7 @@ data class UserDto(
         val email: String,
         val phone: String,
         val username: String,
-        val role: Role,
+        val role: Role? = null
 )
 
 fun User.toDto(): UserDto = UserDto(
