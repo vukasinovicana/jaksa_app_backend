@@ -10,6 +10,7 @@ import java.util.*
 class JwtUtil {
     private val key = Keys.secretKeyFor(SignatureAlgorithm.HS256)
 
+
     fun generateToken(username: String): String =
         Jwts.builder()
             .setSubject(username)
