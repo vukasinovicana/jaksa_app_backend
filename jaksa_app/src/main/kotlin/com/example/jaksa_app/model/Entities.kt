@@ -59,6 +59,7 @@ enum class ClassStatus {
 }
 
 data class ClassDto(
+        val id:Long? = null,
         val studentId: Long,
         val studentFirstName: String,
         val studentLastName: String,
@@ -96,6 +97,7 @@ class Class(
 )
 
 fun Class.toDto(): ClassDto = ClassDto(
+        id = this.id,
         studentId = this.student.id!!,
         studentFirstName = this.student.firstname,
         studentLastName = this.student.lastname,

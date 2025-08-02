@@ -1,6 +1,5 @@
 package com.example.jaksa_app.service
 
-import com.example.jaksa_app.controller.ClassController
 import com.example.jaksa_app.model.Class
 import com.example.jaksa_app.model.ClassDto
 import com.example.jaksa_app.model.ClassStatus
@@ -18,7 +17,7 @@ import java.time.YearMonth
 
 @Service
 class ClassService(
-    private val repository: ClassRepository,    private val userRepository: UserRepository
+    private val classRepository: ClassRepository, private val userRepository: UserRepository
 
 ) {
     @Transactional
@@ -28,7 +27,7 @@ class ClassService(
             val startDate = yearMonth.atDay(1)
             val endDate = yearMonth.atEndOfMonth()
 
-            return repository.findByDateBetweenAndClassStatus(startDate, endDate, ClassStatus.APPROVED).map { it.toDto() }
+            return classRepository.findByDateBetweenAndClassStatus(startDate, endDate, ClassStatus.APPROVED).map { it.toDto() }
         } catch (e: Exception) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Nevalidna godina ili mesec.", e)
         }
@@ -48,10 +47,31 @@ class ClassService(
             requested_by_student = request.requestedByStudent
         )
 
-        repository.save(newClass)
+        classRepository.save(newClass)
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Čas je uspešno dodat.")
     }
 
+    fun getAllClassesForStudent(studentId: Long): List<ClassDto> {
+        if (!userRepository.existsById(studentId)) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Student nije pronađen.")
+        }
+
+        return classRepository.findByStudentId(studentId).map { it.toDto() }
+    }
+
+    fun getAllClasses(): List<ClassDto> {
+        return classRepository.findAll().map { it.toDto() }
+    }
+
+    fun updateClassStatus(classId: Long, classStatus: ClassStatus): String {
+        val classEntity = classRepository.findById(classId)
+            .orElseThrow { RuntimeException("Čas sa ID $classId nije pronađen.") }
+
+        classEntity.classStatus = classStatus
+        classRepository.save(classEntity)
+
+        return "Status časa sa ID $classId ažuriran na $classStatus."
+    }
 
 }
