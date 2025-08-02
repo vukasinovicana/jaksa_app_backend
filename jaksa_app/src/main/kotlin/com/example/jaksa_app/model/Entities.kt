@@ -59,46 +59,50 @@ enum class ClassStatus {
 }
 
 data class ClassDto(
+        val studentId: Long,
+        val studentFirstName: String,
+        val studentLastName: String,
         var date: LocalDate,
         var timeStart: LocalTime,
         var duration: String,
-        var description: String,
         var classStatus: ClassStatus,
-        val studentId: Long,
-        val studentFirstName: String,
-        val studentLastName: String
+        var description: String,
+        val requestedByStudent: Boolean,
 )
 
 data class ClassRequest(
+        val studentId: Long,
         val date: LocalDate,
         val timeStart: LocalTime,
         val duration: String,
         val description: String,
-        val studentId: Long
+        val requestedByStudent: Boolean,
 )
 
 @Entity
 @Table(name = "classes")
 class Class(
-        var date: LocalDate,
-        var time_start: LocalTime,
-        var duration: String,
-        var description: String,
-        @Enumerated(EnumType.STRING)
-        var classStatus: ClassStatus,
+        @Id @GeneratedValue var id: Long? = null,
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "student_id", referencedColumnName = "id")
         var student: User,
-        @Id @GeneratedValue var id: Long? = null)
+        var date: LocalDate,
+        var time_start: LocalTime,
+        var duration: String,
+        @Enumerated(EnumType.STRING)
+        var classStatus: ClassStatus,
+        var description: String,
+        var requested_by_student:Boolean,
+)
 
 fun Class.toDto(): ClassDto = ClassDto(
+        studentId = this.student.id!!,
+        studentFirstName = this.student.firstname,
+        studentLastName = this.student.lastname,
         date = this.date,
         timeStart = this.time_start,
         duration = this.duration,
-        description = this.description,
         classStatus=this.classStatus,
-        studentId = this.student.id!!,
-        studentFirstName = this.student.firstname,
-        studentLastName = this.student.lastname
-
+        description = this.description,
+        requestedByStudent =this.requested_by_student
 )

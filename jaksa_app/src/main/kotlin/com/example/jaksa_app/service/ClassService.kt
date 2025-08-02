@@ -39,12 +39,13 @@ class ClassService(
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Student nije pronađen.") }
 
         val newClass = Class(
+            student = student,
             date = request.date,
             time_start = request.timeStart,
             duration = request.duration,
-            description = request.description,
             classStatus = ClassStatus.PENDING,
-            student = student
+            description = request.description,
+            requested_by_student = request.requestedByStudent
         )
 
         repository.save(newClass)
