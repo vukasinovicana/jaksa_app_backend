@@ -1,6 +1,7 @@
 package com.example.jaksa_app.service
 
 import com.example.jaksa_app.model.ChangePasswordRequest
+import com.example.jaksa_app.model.Role
 import com.example.jaksa_app.model.UserDto
 import com.example.jaksa_app.model.toDto
 import com.example.jaksa_app.repository.UserRepository
@@ -18,6 +19,12 @@ class UserService(
 
     fun findAllUsers(): List<UserDto> =
         repository.findAll().map { it.toDto() }
+
+    fun findAllStudents(): List<UserDto> =
+        repository.findAll()
+            .filter { it.role == Role.STUDENT }
+            .map { it.toDto() }
+
 
     fun findByUsername(username: String) =
         repository.findByUsername(username)

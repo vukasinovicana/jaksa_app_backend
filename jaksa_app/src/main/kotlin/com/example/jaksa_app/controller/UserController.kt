@@ -23,6 +23,11 @@ class UserController(private val userService: UserService) {
         return ResponseEntity.ok(userService.findAllUsers())
     }
 
+    @GetMapping("/allStudents")
+    fun findAllStudents(): ResponseEntity<List<UserDto>> {
+        return ResponseEntity.ok(userService.findAllStudents())
+    }
+
     @GetMapping("/{username}")
     fun findOne(@PathVariable username: String) = userService.findByUsername(username)
 
