@@ -45,4 +45,9 @@ class ClassController(private val classService: ClassService) {
         return ResponseEntity.ok(classService.updateClassStatus(classId, ClassStatus.REJECTED))
     }
 
+    @PutMapping("/deleteClass/{classId}")
+    fun deleteClass(@PathVariable classId: Long): ResponseEntity<String> {
+        return ResponseEntity.ok(classService.deleteClass(classId))
+    }
+
 }

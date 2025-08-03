@@ -74,4 +74,14 @@ class ClassService(
         return "Status časa sa ID $classId ažuriran na $classStatus."
     }
 
+    fun deleteClass(classId: Long): String {
+        val classEntity = classRepository.findById(classId)
+            .orElseThrow { RuntimeException("Čas sa ID $classId nije pronađen.") }
+
+        classRepository.delete(classEntity)
+
+        return "Čas sa ID $classId je uspešno obrisan."
+    }
+
+
 }
